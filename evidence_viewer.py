@@ -1,3 +1,4 @@
+
 import json
 
 G = "\033[92m"
@@ -23,4 +24,9 @@ for event in data["events"]:
     print(f"Reason: {event['reason']}")
 
 print(C + "\n=== END OF REPORT ===" + X)
+passed = sum(e["allowed"] for e in data["events"])
+denied = len(data["events"]) - passed
 
+print(G + f"ALLOWED: {passed}" + X)
+print(R + f"DENIED: {denied}" + X)
+print(f"TOTAL EVENTS: {len(data['events'])}")
