@@ -42,7 +42,9 @@ for action, target in events:
     evidence.append({
         "action": action,
         "target": target,
-        "allowed": allowed
+        "allowed": allowed,
+        "agent_id": "ECHO-01",
+        "reason": "Within permitted scope" if allowed else "Action or path not permitted"
     })
 
 record = {
