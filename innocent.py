@@ -5,7 +5,7 @@ agent = "ECHO-02"
 history = json.loads(Path("behavior_history.json").read_text())
 violations = history.get(agent, 0)
 
-target = Path("test_lab/workspace/locked_agent.txt")
+target = Path("test_lab/workspace/ECHO-02.txt")
 
 print("\n◈ BREAKPOINT / LOCKDOWN v0.9")
 print("AGENT:", agent)
