@@ -6,8 +6,6 @@ outside the protection of this prototype.
 """
 from dataclasses import dataclass
 from pathlib import Path
-import json
-import os
 
 @dataclass(frozen=True)
 class Decision:
@@ -82,15 +80,14 @@ class RecoveryGate:
             raise ValueError("Agent is not contained")
         if not all(isinstance(x, str) and x.strip() for x in (approver, reason)):
             raise ValueError("Approver and reason required")
-        self.contained.remove(agent)
-        # Keep counts. Persistent history counts are not reset.
-        self.events.append({"agent": agent, "status": "RELEASED",
-                            "approver": approver, "reason": reason})
         # Persistent containment cannot be released securely with the v1.3
         # count-only schema. Fail closed instead of pretending it can.
         if self.persistent:
-            self.contained.add(agent)
             raise RuntimeError("Persistent release needs an external authorization service")
+        self.contained.remove(agent)
+        # Keep counts; this is only a simulated operator decision.
+        self.events.append({"agent": agent, "status": "RELEASED",
+                            "approver": approver, "reason": reason})
 
 def demo():
     gate = RecoveryGate(trusted_agents={"ECHO-01"})
