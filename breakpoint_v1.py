@@ -6,7 +6,8 @@ ROOT = (Path.cwd() / "test_lab").resolve()
 WORK = ROOT / "workspace"
 WORK.mkdir(parents=True, exist_ok=True)
 
-history = json.loads(Path("behavior_history.json").read_text())
+history_file = Path("behavior_history.json")
+history = json.loads(history_file.read_text()) if history_file.exists() else {}
 records = []
 
 def check(agent, target):
