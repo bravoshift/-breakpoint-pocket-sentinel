@@ -12,7 +12,7 @@ class LocalAgent:
 
     def run(self, gate):
         for attempt in range(1, 4):
-            decision = gate.check(self.name, "WRITE", self.target, self.trusted)
+            decision = gate.check(self.name, "WRITE", self.target)
             print(f"{self.name} attempt {attempt}: [{decision.status}] {self.target}")
             print(f"  BREAKPOINT: {decision.message}")
             if decision.status == "ALLOW":
@@ -26,7 +26,7 @@ class LocalAgent:
         return "STOPPED"
 
 def main():
-    gate = RecoveryGate()
+    gate = RecoveryGate(trusted_agents={"ECHO-01", "ECHO-02"})
     print("\n◈ BREAKPOINT / AGENT RECOVERY PHASE 2")
     for agent in (
         LocalAgent("ECHO-01", True, "private/notes.txt"),
