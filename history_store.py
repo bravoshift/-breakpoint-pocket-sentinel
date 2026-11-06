@@ -6,7 +6,7 @@ import os
 import secrets
 from pathlib import Path
 
-BASE = Path(__file__).resolve().parent
+LOCKOUT_THRESHOLD = 3  # Shared persistent-history lockout threshold\n\nBASE = Path(__file__).resolve().parent
 HISTORY = BASE / "behavior_history.json"
 TAG = BASE / "behavior_history.hmac"
 KEY = BASE / ".breakpoint_state/history.key"
