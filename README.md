@@ -68,7 +68,7 @@ The watchdog checks locally stored evidence against locally stored SHA-256 finge
 ## Remaining Cleanup
 
 - Protect behavior history with an independent, trusted integrity mechanism and fail-closed verification before trusting counts.
-- A fresh-clone run and evidence-tampering checks were reported successful in an external review; automated regression tests are still needed.
+- Fresh-clone execution and evidence-tampering checks were verified in an AI-assisted review (Claude); automated regression tests are still needed.
 - `gate.py` and `gate_v04.py` intentionally retain the same historical example; a later cleanup can consolidate them.
 - A v1.2 milestone commit was a marker, not a new implementation.
 
