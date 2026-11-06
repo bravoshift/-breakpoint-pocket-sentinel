@@ -16,6 +16,23 @@ Explore how autonomous agent actions can be observed, evaluated, denied, contain
 - v0.4 — Controlled file-write enforcement
 - v0.5 — SHA-256 evidence recorder
 - v0.6 — Independent integrity watchdog
+- v0.7 — Behavior and violation history
+- v0.8 — Trust check and repeat-offender policy
+- v0.9 — Lockdown simulations
+- v1.0 — Multi-agent controller
+- v1.1 — Per-run containment after a denied action
+
+## Quick Start
+
+Requires Python 3.9+; no third-party packages.
+
+```sh
+python breakpoint_v11.py
+```
+
+On a fresh clone the controller initializes missing behavior history automatically. It writes demonstration output to `test_lab/`, `controller_log.json`, and `behavior_history.json`. Repeated runs retain violation counts; remove the generated history file to reset this local demonstration.
+
+For the black-box integrity demonstration, run `python blackbox.py` followed by `python watchdog.py`. The watchdog verifies the locally stored SHA-256 sidecar, not an externally trusted seal.
 
 ## Verified Experiments
 
@@ -46,7 +63,7 @@ This is a controlled experimental prototype, not a production security system.
 
 It does not yet monitor external AI agents, enforce operating-system-wide containment, or provide tamper-resistant evidence storage.
 
-The watchdog checks locally stored evidence against a locally stored SHA-256 fingerprint.
+The watchdog checks locally stored evidence against a locally stored SHA-256 fingerprint. An attacker who can change both files can forge a matching fingerprint. The behavior history is also a locally editable JSON file; it is not a secure trust database. These scripts simulate agent actions rather than intercepting real agents.
 
 ## Future Research
 
