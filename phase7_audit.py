@@ -5,7 +5,7 @@ import hmac
 import json
 from pathlib import Path
 from agent_recovery import RecoveryGate
-from history_store import _key
+from history_store import _key, load_history
 
 SCENARIOS = [
     ("ECHO-01", ["private/notes.txt", "workspace/notes.txt"]),
@@ -17,7 +17,7 @@ def canonical(record):
     return json.dumps(record, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
 
 def digest(record):
-    return hmac.new(_key(), canonical(record).encode(), hashlib.sha256).hexdigest()
+    return hmac.new(_key(), b"breakpoint-evidence-v1:" + canonical(record).encode(), hashlib.sha256).hexdigest()
 
 def make_audit():
     gate = RecoveryGate(trusted_agents={"ECHO-01", "ECHO-02"})
@@ -55,6 +55,8 @@ def main():
     group.add_argument("--output", help="Create JSONL and signed manifest; no overwrite")
     group.add_argument("--verify", help="Verify JSONL against its signed manifest")
     args = parser.parse_args()
+    # Initialize authenticated history together with the key on first use.
+    load_history()
     if args.verify:
         target = Path(args.verify)
         manifest = Path(str(target) + ".manifest")
