@@ -5,7 +5,7 @@ same-user modification, identity impersonation, rollback and key deletion remain
 outside the protection of this prototype.
 """
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path\nfrom history_store import LOCKOUT_THRESHOLD
 import os
 
 @dataclass(frozen=True)
@@ -30,7 +30,7 @@ class RecoveryGate:
             from history_store import load_history
             self.denials = load_history()
             self.contained = {a for a, n in self.denials.items()
-                              if n >= (max_denials if a in self.trusted_agents else 1)}
+                              if n >= LOCKOUT_THRESHOLD or\n                              (a not in self.trusted_agents and n >= 1) or\n                              (a in self.trusted_agents and n >= max_denials)}
 
     def _save(self):
         if self.persistent:
