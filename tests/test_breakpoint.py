@@ -13,7 +13,7 @@ class BreakpointTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.cwd = Path(self.tmp.name)
-        self.env = dict(os.environ, PYTHONPATH=str(REPO))
+        self.env = dict(os.environ, PYTHONPATH=str(REPO), BREAKPOINT_STATE_DIR=str(self.cwd))
 
     def run_script(self, script):
         return subprocess.run([sys.executable, str(REPO / script)],
@@ -42,6 +42,27 @@ class BreakpointTests(unittest.TestCase):
         (self.cwd / "behavior_history.json").unlink()
         (self.cwd / "behavior_history.hmac").unlink()
         self.assertNotEqual(self.run_script("lockdown.py").returncode, 0)
+
+    def test_behavior_cannot_resign_forged_history(self):
+        self.assertEqual(self.run_script("breakpoint_v11.py").returncode, 0)
+        (self.cwd / "behavior_history.json").write_text('{"ECHO-02": 0}')
+        result = self.run_script("behavior.py")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("authentication failed", result.stderr)
+        self.assertNotEqual(self.run_script("innocent.py").returncode, 0)
+
+    def test_working_directory_does_not_reset_history(self):
+        self.assertEqual(self.run_script("breakpoint_v11.py").returncode, 0)
+        subdir = self.cwd / "subfolder"
+        subdir.mkdir()
+        env = dict(self.env)
+        env.pop("BREAKPOINT_STATE_DIR", None)
+        # A fresh copy of the implementation in a separate project is isolated;
+        # changing cwd alone with an explicit state directory must not reset it.
+        result = subprocess.run([sys.executable, str(REPO / "innocent.py")],
+                                cwd=subdir, env=self.env, text=True, capture_output=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("PAST VIOLATIONS: 1", result.stdout)
 
     def test_evidence_verification(self):
         self.assertEqual(self.run_script("blackbox.py").returncode, 0)
