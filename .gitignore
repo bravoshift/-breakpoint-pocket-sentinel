@@ -5,3 +5,7 @@ blackbox_lab/
 evidence.json
 blackbox.json
 blackbox.sha256
+evidence.sha256
+behavior_history.json
+behavior_history.sha256
+controller_log.json
