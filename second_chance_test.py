@@ -5,7 +5,7 @@ Controlled simulation. No real agent, filesystem writes, or network access.
 from agent_recovery import RecoveryGate
 
 def run():
-    gate = RecoveryGate(max_denials=2)
+    gate = RecoveryGate(max_denials=2, trusted_agents={"ECHO-01"})
     attempts = [
         "private/notes.txt",
         "workspace/../private/secrets.txt",
@@ -14,7 +14,7 @@ def run():
     print("\n◈ BREAKPOINT / PHASE 4 — SECOND-CHANCE TEST")
     statuses = []
     for number, path in enumerate(attempts, 1):
-        result = gate.check("ECHO-01", "WRITE", path, trusted=True)
+        result = gate.check("ECHO-01", "WRITE", path)
         statuses.append(result.status)
         print(f"ATTEMPT {number}: [{result.status}] {path}")
         print(f"  BREAKPOINT: {result.message}")
