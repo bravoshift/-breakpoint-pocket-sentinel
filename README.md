@@ -31,7 +31,7 @@ Requires Python 3.9+; no third-party packages.
 python breakpoint_v11.py
 ```
 
-On a fresh clone the controller creates a local 32-byte key under `.breakpoint_state/` and initializes an HMAC-authenticated behavior history automatically. It writes demonstration output to `test_lab/`, `controller_log.json`, and `behavior_history.json`. Repeated runs retain violation counts; to reset the demo, move aside or delete **all three** local state items: `.breakpoint_state/`, `behavior_history.json`, and `behavior_history.hmac` (only in a test environment). Removing or modifying history without its matching key and tag causes access to fail closed.
+On a fresh clone the controller creates a local 32-byte key under `.breakpoint_state/` and initializes an HMAC-authenticated behavior history automatically. It writes demonstration output to `test_lab/`, `controller_log.json`, and `behavior_history.json`. The history state is anchored to the repository directory, not the current working directory. Tests can isolate it using `BREAKPOINT_STATE_DIR`. Repeated runs retain violation counts; to reset the demo, move aside or delete **all three** local state items: `.breakpoint_state/`, `behavior_history.json`, and `behavior_history.hmac` (only in a test environment). Removing or modifying history without its matching key and tag causes access to fail closed.
 
 For integrity demonstrations, run `python blackbox.py`, `python sentinel.py`, then `python watchdog.py`. The watchdog compares locally stored SHA-256 sidecars for black-box and Sentinel evidence. It also authenticates behavior history using a local HMAC-SHA256 key. Missing or altered authenticated history is reported as an alert. None of these local fingerprints is an externally trusted seal.
 
@@ -72,12 +72,12 @@ This is a controlled experimental prototype, not a production security system.
 
 It does not yet monitor external AI agents, enforce operating-system-wide containment, or provide tamper-resistant evidence storage.
 
-The watchdog checks locally stored evidence against locally stored SHA-256 fingerprints. An attacker who can change both files can forge a matching fingerprint. The behavior history is authenticated using an HMAC key stored on the same machine. This detects history-only tampering or deletion, but **does not protect against an attacker with access to the key or the same user account**. It is not a secure trust database. Writes are not transactional across the history and tag files; an interrupted write may require a manual demo reset. These scripts simulate agent actions rather than intercepting real agents.
+The watchdog checks locally stored evidence against locally stored SHA-256 fingerprints. An attacker who can change both files can forge a matching fingerprint. The behavior history is authenticated using an HMAC key stored on the same machine. This detects history-only tampering or deletion, but **does not protect against an attacker with access to the key or the same user account**. A previously valid history-and-tag pair can be replayed to roll back violation counts; HMAC does not guarantee freshness. Deleting the key, history, and tag together also resets the demonstration and bypasses previous lockouts. Real rollback resistance requires an independently protected monotonic counter or trusted external state. It is not a secure trust database. Writes are not transactional across the history and tag files; an interrupted write may require a manual demo reset. These scripts simulate agent actions rather than intercepting real agents.
 
 ## Remaining Cleanup
 
-- Move the authentication key to an independently protected service or OS-backed key store before real deployment.
-- Fresh-clone execution and evidence-tampering checks were verified in an AI-assisted review (Claude); isolated regression tests are now included in `tests/` but have not yet been independently executed after these changes.
+- Move authentication and anti-rollback state to an independently protected service or OS-backed store before real deployment.
+- Fresh-clone execution and evidence-tampering checks were verified in an AI-assisted review (Claude); the initial four regression tests passed in an AI-assisted review (Claude, Python 3.13); additional bypass regression tests have since been added and still need a fresh run.
 - `gate.py` and `gate_v04.py` intentionally retain the same historical example; a later cleanup can consolidate them.
 - A v1.2 milestone commit was a marker, not a new implementation.
 
