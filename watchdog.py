@@ -1,30 +1,24 @@
 import hashlib
 from pathlib import Path
 
-C="\033[96m"
-G="\033[92m"
-R="\033[91m"
-X="\033[0m"
+print("\n◈ BREAKPOINT / WATCHDOG")
+print("  LOCAL EVIDENCE INTEGRITY CHECK\n")
 
-print(C+"\n◈ BREAKPOINT / WATCHDOG v0.6"+X)
-print("  INDEPENDENT INTEGRITY CHECK\n")
-
-evidence=Path("blackbox.json")
-seal=Path("blackbox.sha256")
-
-if not evidence.exists() or not seal.exists():
-    print(R+"[ALERT] EVIDENCE MISSING"+X)
-else:
-    expected=seal.read_text().strip()
-    actual=hashlib.sha256(
-        evidence.read_bytes()
-    ).hexdigest()
-
-    if actual==expected:
-        print(G+"[VERIFIED] Evidence intact"+X)
+for name in ("blackbox", "evidence", "behavior_history"):
+    evidence = Path(name + ".json")
+    seal = Path(name + ".sha256")
+    if not evidence.exists() and not seal.exists():
+        print(f"[NOT FOUND] {name}: no evidence generated")
+        continue
+    if not evidence.exists() or not seal.exists():
+        print(f"[ALERT] {name}: evidence or fingerprint missing")
+        continue
+    expected = seal.read_text().strip()
+    actual = hashlib.sha256(evidence.read_bytes()).hexdigest()
+    if actual == expected:
+        print(f"[VERIFIED] {name}: local fingerprint matches")
     else:
-        print(R+"[ALERT] EVIDENCE TAMPERED"+X)
-        print("Expected:",expected[:20])
-        print("Observed:",actual[:20])
+        print(f"[ALERT] {name}: evidence changed or fingerprint invalid")
 
-print(C+"\nWATCHDOG SCAN COMPLETE"+X)
+print("\nNOTE: Local fingerprints are not tamper-resistant.")
+print("WATCHDOG SCAN COMPLETE")
