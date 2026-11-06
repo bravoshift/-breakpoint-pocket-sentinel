@@ -1,6 +1,8 @@
 import json
 
-history = json.load(open("behavior_history.json"))
+from pathlib import Path
+history_file = Path("behavior_history.json")
+history = json.loads(history_file.read_text()) if history_file.exists() else {}
 agent = "ECHO-01"
 violations = history.get(agent, 0)
 
