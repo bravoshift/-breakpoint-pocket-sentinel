@@ -89,5 +89,26 @@ class RecoveryTests(unittest.TestCase):
         gate.check("ECHO", "WRITE", "workspace/../private/x")
         self.assertEqual(gate.check("ECHO", "READ", "workspace/notes.txt").status, "HALTED")
 
+
+    def test_read_symlink_escape(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            (root / "workspace").mkdir()
+            (root / "private").mkdir()
+            (root / "workspace" / "link").symlink_to(root / "private", target_is_directory=True)
+            gate = RecoveryGate(trusted_agents={"ECHO"}, workspace_root=root / "workspace")
+            self.assertEqual(gate.check("ECHO", "READ", "workspace/link/x").status, "CONTAINED")
+
+    def test_read_hard_link_escape(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            (root / "workspace").mkdir()
+            (root / "private").mkdir()
+            secret = root / "private" / "secret.txt"
+            secret.write_text("example")
+            os.link(secret, root / "workspace" / "linked.txt")
+            gate = RecoveryGate(trusted_agents={"ECHO"}, workspace_root=root / "workspace")
+            self.assertEqual(gate.check("ECHO", "READ", "workspace/linked.txt").status, "CONTAINED")
+
 if __name__ == "__main__":
     unittest.main()
