@@ -45,13 +45,13 @@ class BreakpointTests(unittest.TestCase):
 
     def test_deleted_history_fails_closed(self):
         self.assertEqual(self.run_script("breakpoint_v11.py").returncode, 0)
-        (self.cwd / "behavior_history.json").unlink()
+        (self.project / "behavior_history.json").unlink()
         (self.project / "behavior_history.hmac").unlink()
         self.assertNotEqual(self.run_script("lockdown.py").returncode, 0)
 
     def test_behavior_cannot_resign_forged_history(self):
         self.assertEqual(self.run_script("breakpoint_v11.py").returncode, 0)
-        (self.cwd / "behavior_history.json").write_text('{"ECHO-02": 0}')
+        (self.project / "behavior_history.json").write_text('{"ECHO-02": 0}')
         result = self.run_script("behavior.py")
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("authentication failed", result.stderr)
