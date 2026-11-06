@@ -66,6 +66,10 @@ The project owner directed the research, selected the experiments, executed the 
 
 This project demonstrates human-directed, AI-assisted security prototyping.
 
+## Security and Licensing
+
+Please read [SECURITY.md](SECURITY.md) before reporting vulnerabilities. The project is public, but no reuse license has been selected yet; public visibility does not grant a general commercial-use license. The code remains an experimental demonstration.
+
 ## Current Limitations
 
 This is a controlled experimental prototype, not a production security system.
@@ -77,7 +81,7 @@ The watchdog checks locally stored evidence against locally stored SHA-256 finge
 ## Remaining Cleanup
 
 - Move authentication and anti-rollback state to an independently protected service or OS-backed store before real deployment.
-- Fresh-clone execution and evidence-tampering checks were verified in an AI-assisted review (Claude); the initial four regression tests passed in an AI-assisted review (Claude, Python 3.13); seven regression tests now cover startup, tampering, history laundering, working-directory changes, environment overrides, deletion, and evidence integrity; the latest changes still need a fresh run.
+- Seven regression tests passed on a fresh clone in an AI-assisted review (Claude, Python 3.13). Mutation checks confirmed that reintroducing four previously fixed bug classes causes test failures. This is not a formal third-party security audit.
 - `gate.py` and `gate_v04.py` intentionally retain the same historical example; a later cleanup can consolidate them.
 - A v1.2 milestone commit was a marker, not a new implementation.
 
