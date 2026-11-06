@@ -1,5 +1,6 @@
 """Run with: python -m unittest discover -s tests -v"""
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -13,10 +14,15 @@ class BreakpointTests(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
         self.cwd = Path(self.tmp.name)
-        self.env = dict(os.environ, PYTHONPATH=str(REPO), BREAKPOINT_STATE_DIR=str(self.cwd))
+        self.project = self.cwd / "project"
+        self.project.mkdir()
+        for source in REPO.glob("*.py"):
+            shutil.copy2(source, self.project / source.name)
+        self.env = dict(os.environ)
+        self.env.pop("BREAKPOINT_STATE_DIR", None)
 
     def run_script(self, script):
-        return subprocess.run([sys.executable, str(REPO / script)],
+        return subprocess.run([sys.executable, str(self.project / script)],
                               cwd=self.cwd, env=self.env,
                               text=True, capture_output=True)
 
@@ -30,7 +36,7 @@ class BreakpointTests(unittest.TestCase):
 
     def test_tampered_history_fails_closed(self):
         self.assertEqual(self.run_script("breakpoint_v11.py").returncode, 0)
-        history = self.cwd / "behavior_history.json"
+        history = self.project / "behavior_history.json"
         history.write_text('{"ECHO-02": 0}')
         result = self.run_script("innocent.py")
         self.assertNotEqual(result.returncode, 0)
@@ -40,7 +46,7 @@ class BreakpointTests(unittest.TestCase):
     def test_deleted_history_fails_closed(self):
         self.assertEqual(self.run_script("breakpoint_v11.py").returncode, 0)
         (self.cwd / "behavior_history.json").unlink()
-        (self.cwd / "behavior_history.hmac").unlink()
+        (self.project / "behavior_history.hmac").unlink()
         self.assertNotEqual(self.run_script("lockdown.py").returncode, 0)
 
     def test_behavior_cannot_resign_forged_history(self):
@@ -55,12 +61,16 @@ class BreakpointTests(unittest.TestCase):
         self.assertEqual(self.run_script("breakpoint_v11.py").returncode, 0)
         subdir = self.cwd / "subfolder"
         subdir.mkdir()
-        env = dict(self.env)
-        env.pop("BREAKPOINT_STATE_DIR", None)
-        # A fresh copy of the implementation in a separate project is isolated;
-        # changing cwd alone with an explicit state directory must not reset it.
-        result = subprocess.run([sys.executable, str(REPO / "innocent.py")],
+        result = subprocess.run([sys.executable, str(self.project / "innocent.py")],
                                 cwd=subdir, env=self.env, text=True, capture_output=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("PAST VIOLATIONS: 1", result.stdout)
+
+    def test_environment_override_cannot_reset_history(self):
+        self.assertEqual(self.run_script("breakpoint_v11.py").returncode, 0)
+        env = dict(self.env, BREAKPOINT_STATE_DIR=str(self.cwd / "empty"))
+        result = subprocess.run([sys.executable, str(self.project / "innocent.py")],
+                                cwd=self.cwd, env=env, text=True, capture_output=True)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("PAST VIOLATIONS: 1", result.stdout)
 
