@@ -8,7 +8,9 @@ An experimental AI-agent security prototype developed under Sandbox Memory's Mad
 
 Explore how autonomous agent actions can be observed, evaluated, denied, contained, and recorded for forensic review.
 
-For the experimental audit-hardening branch, see [AUDIT_HARDENING.md](AUDIT_HARDENING.md). The recovery phases are simulations, not a real agent security boundary.\n\n## Development Milestones
+For the experimental audit-hardening branch, see [AUDIT_HARDENING.md](AUDIT_HARDENING.md). The recovery phases are simulations, not a real agent security boundary.
+
+## Development Milestones
 
 - v0.1 — Simulated security event reporting
 - v0.2 — Rule-based policy detection
