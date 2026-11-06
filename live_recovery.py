@@ -66,8 +66,8 @@ def main():
     parser.add_argument("--live", action="store_true", help="Make one potentially billed API request")
     parser.add_argument("--model", default="gpt-4.1-mini")
     args = parser.parse_args()
-    gate = RecoveryGate()
-    first = gate.check("ECHO-01", "WRITE", INITIAL_PATH, trusted=True)
+    gate = RecoveryGate(trusted_agents={"ECHO-01", "ECHO-02"})
+    first = gate.check("ECHO-01", "WRITE", INITIAL_PATH, )
     print(f"ATTEMPT 1: {first.status} — {INITIAL_PATH}")
     print("FEEDBACK:", first.message)
     if first.status != "DENIED_GUIDED":
@@ -83,7 +83,7 @@ def main():
         proposed = "workspace/notes.txt"
         print("DRY RUN: simulated proposal; no API call.")
     print("PROPOSED:", proposed)
-    second = gate.check("ECHO-01", "WRITE", proposed, trusted=True)
+    second = gate.check("ECHO-01", "WRITE", proposed, )
     print("ATTEMPT 2:", second.status)
     print("FINAL:", "RECOVERED" if second.status == "ALLOW" else second.status)
     print("No files written.")
