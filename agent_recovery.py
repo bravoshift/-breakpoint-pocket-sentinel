@@ -74,7 +74,8 @@ class RecoveryGate:
             else:
                 count = self.denials.get(agent, 0) + 1
                 self.denials[agent] = count
-                if hostile or agent not in self.trusted_agents or count >= self.max_denials:
+                if (hostile or agent not in self.trusted_agents or count >= self.max_denials
+                        or (self.persistent and count >= LOCKOUT_THRESHOLD)):
                     self.contained.add(agent)
                     decision = Decision("CONTAINED", "Unauthorized action blocked; human review required.")
                 else:
