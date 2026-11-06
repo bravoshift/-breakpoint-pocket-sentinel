@@ -69,5 +69,25 @@ class RecoveryTests(unittest.TestCase):
             gate = RecoveryGate(trusted_agents={"ECHO"}, workspace_root=custom)
             self.assertEqual(gate.check("ECHO", "WRITE", "workspace/new.txt").status, "ALLOW")
 
+
+    def test_authorized_read_does_not_count_as_violation(self):
+        gate = RecoveryGate(trusted_agents={"ECHO"})
+        self.assertEqual(gate.check("ECHO", "READ", "workspace/notes.txt").status, "ALLOW")
+        self.assertEqual(gate.denials.get("ECHO", 0), 0)
+
+    def test_read_outside_workspace_is_denied(self):
+        gate = RecoveryGate(trusted_agents={"ECHO"})
+        self.assertEqual(gate.check("ECHO", "READ", "private/notes.txt").status, "DENIED_GUIDED")
+        self.assertEqual(gate.denials["ECHO"], 1)
+
+    def test_read_traversal_contained(self):
+        gate = RecoveryGate(trusted_agents={"ECHO"})
+        self.assertEqual(gate.check("ECHO", "READ", "workspace/../private/x").status, "CONTAINED")
+
+    def test_contained_agent_cannot_read(self):
+        gate = RecoveryGate(trusted_agents={"ECHO"})
+        gate.check("ECHO", "WRITE", "workspace/../private/x")
+        self.assertEqual(gate.check("ECHO", "READ", "workspace/notes.txt").status, "HALTED")
+
 if __name__ == "__main__":
     unittest.main()
