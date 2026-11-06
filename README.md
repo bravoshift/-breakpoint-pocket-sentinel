@@ -8,7 +8,7 @@ An experimental AI-agent security prototype developed under Sandbox Memory's Mad
 
 Explore how autonomous agent actions can be observed, evaluated, denied, contained, and recorded for forensic review.
 
-## Development Milestones
+For the experimental audit-hardening branch, see [AUDIT_HARDENING.md](AUDIT_HARDENING.md). The recovery phases are simulations, not a real agent security boundary.\n\n## Development Milestones
 
 - v0.1 — Simulated security event reporting
 - v0.2 — Rule-based policy detection
@@ -84,7 +84,7 @@ The watchdog checks locally stored evidence against locally stored SHA-256 finge
 ## Remaining Cleanup
 
 - Move authentication and anti-rollback state to an independently protected service or OS-backed store before real deployment.
-- Seven regression tests passed on a fresh clone in an AI-assisted review (Claude, Python 3.13). Mutation checks confirmed that reintroducing four previously fixed bug classes causes test failures. This is not a formal third-party security audit.
+- Seven v1.3 regression tests passed on an earlier frozen baseline in an AI-assisted review (Claude, Python 3.13); this branch's new tests require a fresh run. Mutation checks confirmed that reintroducing four previously fixed bug classes causes test failures. This is not a formal third-party security audit.
 - `gate.py` and `gate_v04.py` intentionally retain the same historical example; a later cleanup can consolidate them.
 - A v1.2 milestone commit was a marker, not a new implementation.
 
