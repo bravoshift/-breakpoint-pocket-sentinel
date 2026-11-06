@@ -6,6 +6,7 @@ outside the protection of this prototype.
 """
 from dataclasses import dataclass
 from pathlib import Path
+import os
 
 @dataclass(frozen=True)
 class Decision:
@@ -48,8 +49,11 @@ class RecoveryGate:
         if len(parts) < 2 or parts[0] != self.allowed_root:
             return False, False
         # Resolve existing symlinks, including in parent directories.
-        candidate = (self.workspace_root.parent / path).resolve()
+        candidate = self.workspace_root.joinpath(*parts[1:]).resolve()
         if not candidate.is_relative_to(self.workspace_root):
+            return False, True
+        # Hard-linked existing files can alias content outside workspace.
+        if candidate.is_file() and os.stat(candidate).st_nlink > 1:
             return False, True
         return True, False
 
