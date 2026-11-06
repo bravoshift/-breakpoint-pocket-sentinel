@@ -31,9 +31,13 @@ def _key():
     return KEY.read_bytes()
 
 def load_history():
+    first_run = not KEY.exists() and not HISTORY.exists() and not TAG.exists()
     key = _key()
     if not HISTORY.exists() and not TAG.exists():
-        return {}
+        if first_run:
+            save_history({})
+            return {}
+        raise HistoryIntegrityError("Authenticated history missing; access denied")
     if not HISTORY.exists() or not TAG.exists():
         raise HistoryIntegrityError("History or authentication tag missing; access denied")
     data = HISTORY.read_bytes()
