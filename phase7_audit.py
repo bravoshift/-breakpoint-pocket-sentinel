@@ -20,7 +20,7 @@ def canonical(record):
     return json.dumps(record, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
 
 def make_audit():
-    gate = RecoveryGate()
+    gate = RecoveryGate(trusted_agents={"ECHO-01", "ECHO-02"})
     entries = []
     previous = "0" * 64
     for agent, trusted, paths in SCENARIOS:
