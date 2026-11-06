@@ -59,6 +59,9 @@ digest = hashlib.sha256(data.encode()).hexdigest()
 with open("evidence.json", "w") as f:
     f.write(data)
 
+with open("evidence.sha256", "w") as f:
+    f.write(digest + "\n")
+
 print(Y + f"\nTHREATS DETECTED: {alerts}" + X)
 print(f"EVIDENCE SHA-256: {digest[:16]}...")
-print(G + "Evidence saved: evidence.json" + X)
+print(G + "Evidence saved: evidence.json (fingerprint: evidence.sha256)" + X)
