@@ -1,8 +1,8 @@
+from history_store import load_history
 import json
 
 from pathlib import Path
-history_file = Path("behavior_history.json")
-history = json.loads(history_file.read_text()) if history_file.exists() else {}
+history = load_history()
 agent = "ECHO-01"
 violations = history.get(agent, 0)
 
