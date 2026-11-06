@@ -31,7 +31,7 @@ Requires Python 3.9+; no third-party packages.
 python breakpoint_v11.py
 ```
 
-On a fresh clone the controller creates a local 32-byte key under `.breakpoint_state/` and initializes an HMAC-authenticated behavior history automatically. It writes demonstration output to `test_lab/`, `controller_log.json`, and `behavior_history.json`. The history state is anchored to the repository directory, not the current working directory. Tests can isolate it using `BREAKPOINT_STATE_DIR`. Repeated runs retain violation counts; to reset the demo, move aside or delete **all three** local state items: `.breakpoint_state/`, `behavior_history.json`, and `behavior_history.hmac` (only in a test environment). Removing or modifying history without its matching key and tag causes access to fail closed.
+On a fresh clone the controller creates a local 32-byte key under `.breakpoint_state/` and initializes an HMAC-authenticated behavior history automatically. It writes demonstration output to `test_lab/`, `controller_log.json`, and `behavior_history.json`. The history state is anchored to the repository directory, not the current working directory. Repeated runs retain violation counts; to reset the demo, move aside or delete **all three** local state items: `.breakpoint_state/`, `behavior_history.json`, and `behavior_history.hmac` (only in a test environment). Removing or modifying history without its matching key and tag causes access to fail closed.
 
 For integrity demonstrations, run `python blackbox.py`, `python sentinel.py`, then `python watchdog.py`. The watchdog compares locally stored SHA-256 sidecars for black-box and Sentinel evidence. It also authenticates behavior history using a local HMAC-SHA256 key. Missing or altered authenticated history is reported as an alert. None of these local fingerprints is an externally trusted seal.
 
@@ -41,7 +41,7 @@ For integrity demonstrations, run `python blackbox.py`, `python sentinel.py`, th
 python -m unittest discover -s tests -v
 ```
 
-Tests use temporary directories and do not modify the working demo state.
+Tests copy the Python scripts into temporary project directories and do not modify the working demo state. The application ignores `BREAKPOINT_STATE_DIR`; environment variables cannot redirect its trust history.
 
 ## Verified Experiments
 
@@ -77,7 +77,7 @@ The watchdog checks locally stored evidence against locally stored SHA-256 finge
 ## Remaining Cleanup
 
 - Move authentication and anti-rollback state to an independently protected service or OS-backed store before real deployment.
-- Fresh-clone execution and evidence-tampering checks were verified in an AI-assisted review (Claude); the initial four regression tests passed in an AI-assisted review (Claude, Python 3.13); additional bypass regression tests have since been added and still need a fresh run.
+- Fresh-clone execution and evidence-tampering checks were verified in an AI-assisted review (Claude); the initial four regression tests passed in an AI-assisted review (Claude, Python 3.13); seven regression tests now cover startup, tampering, history laundering, working-directory changes, environment overrides, deletion, and evidence integrity; the latest changes still need a fresh run.
 - `gate.py` and `gate_v04.py` intentionally retain the same historical example; a later cleanup can consolidate them.
 - A v1.2 milestone commit was a marker, not a new implementation.
 
