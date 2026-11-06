@@ -22,11 +22,11 @@ def choose_path(feedback, candidates=CANDIDATES):
     return candidates[0][0]
 
 def run():
-    gate = RecoveryGate()
+    gate = RecoveryGate(trusted_agents={"ECHO-01", "ECHO-02"})
     print("\n◈ BREAKPOINT / PHASE 3 — DECISION TEST")
     agent = "ECHO-01"
     initial = "private/notes.txt"
-    first = gate.check(agent, "WRITE", initial, trusted=True)
+    first = gate.check(agent, "WRITE", initial, )
     print(f"ATTEMPT 1 [{first.status}] {initial}")
     print(f"FEEDBACK: {first.message}")
     if first.status != "DENIED_GUIDED":
@@ -37,7 +37,7 @@ def run():
         print(f"  {path} — {description}")
     selected = choose_path(first.message)
     print(f"SELECTED: {selected}")
-    second = gate.check(agent, "WRITE", selected, trusted=True)
+    second = gate.check(agent, "WRITE", selected, )
     print(f"ATTEMPT 2 [{second.status}] {selected}")
     print("FINAL:", "RECOVERED" if second.status == "ALLOW" else second.status)
 
