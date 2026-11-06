@@ -10,6 +10,9 @@ for name in ("blackbox", "evidence", "behavior_history"):
     if not evidence.exists() and not seal.exists():
         print(f"[NOT FOUND] {name}: no evidence generated")
         continue
+    if name == "behavior_history" and evidence.exists() and not seal.exists():
+        print("[UNPROTECTED] behavior_history: no trusted fingerprint configured")
+        continue
     if not evidence.exists() or not seal.exists():
         print(f"[ALERT] {name}: evidence or fingerprint missing")
         continue
