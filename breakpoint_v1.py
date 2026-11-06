@@ -1,3 +1,4 @@
+from history_store import load_history, save_history
 import json
 from pathlib import Path
 from datetime import datetime, timezone
@@ -6,8 +7,7 @@ ROOT = (Path.cwd() / "test_lab").resolve()
 WORK = ROOT / "workspace"
 WORK.mkdir(parents=True, exist_ok=True)
 
-history_file = Path("behavior_history.json")
-history = json.loads(history_file.read_text()) if history_file.exists() else {}
+history = load_history()
 records = []
 
 def check(agent, target):
@@ -39,9 +39,7 @@ check("ECHO-01", "workspace/echo01.txt")
 check("ECHO-02", "workspace/echo02.txt")
 check("ECHO-02", "private/secrets.txt")
 
-Path("behavior_history.json").write_text(
-    json.dumps(history, indent=2)
-)
+save_history(history)
 Path("controller_log.json").write_text(
     json.dumps(records, indent=2)
 )
