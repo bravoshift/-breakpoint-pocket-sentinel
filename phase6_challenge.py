@@ -17,11 +17,11 @@ def run():
         ["CONTAINED", "HALTED"],
     ]
     for (agent, trusted, paths), expected_states in zip(scenarios, expected):
-        gate = RecoveryGate()
+        gate = RecoveryGate(trusted_agents={"ECHO-01", "ECHO-02"})
         print(f"\n{agent} (trusted={trusted})")
         actual = []
         for path in paths:
-            decision = gate.check(agent, "WRITE", path, trusted=trusted)
+            decision = gate.check(agent, "WRITE", path)
             actual.append(decision.status)
             print(f"  {decision.status}: {path}")
         if actual != expected_states:
