@@ -1,3 +1,4 @@
+from history_store import load_history, save_history
 from pathlib import Path
 import json
 
@@ -31,7 +32,7 @@ for action,target in attempts:
         print(G+f"[ALLOW] {action} {target}"+X)
 
 history[agent]=violations
-history_file.write_text(json.dumps(history,indent=2))
+save_history(history)
 
 print(Y+"\nTOTAL VIOLATIONS:",violations)
 print("VERDICT:", "REPEAT OFFENDER" if violations>=2 else "MONITOR"+X)
