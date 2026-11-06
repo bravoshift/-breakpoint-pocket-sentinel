@@ -6,9 +6,10 @@ import os
 import secrets
 from pathlib import Path
 
-HISTORY = Path("behavior_history.json")
-TAG = Path("behavior_history.hmac")
-KEY = Path(".breakpoint_state/history.key")
+BASE = Path(os.environ["BREAKPOINT_STATE_DIR"]).resolve() if "BREAKPOINT_STATE_DIR" in os.environ else Path(__file__).resolve().parent
+HISTORY = BASE / "behavior_history.json"
+TAG = BASE / "behavior_history.hmac"
+KEY = BASE / ".breakpoint_state/history.key"
 
 class HistoryIntegrityError(RuntimeError):
     pass
