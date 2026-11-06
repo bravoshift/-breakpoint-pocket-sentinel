@@ -68,7 +68,10 @@ This project demonstrates human-directed, AI-assisted security prototyping.
 
 ## Security and Licensing
 
-Please read [SECURITY.md](SECURITY.md) before reporting vulnerabilities. The project is public, but no reuse license has been selected yet; public visibility does not grant a general commercial-use license. The code remains an experimental demonstration.
+Copyright © 2026 the BREAKPOINT project owner. All rights reserved, subject to any rights held by third parties and applicable law.
+
+
+Please read [SECURITY.md](SECURITY.md) before reporting vulnerabilities. **Public repository; rights reserved.** No open-source license is granted for this project. You may view the repository under GitHub's applicable terms, but publication does not grant general permission to copy, modify, redistribute, or commercially reuse its contents. Contact the repository owner to request additional permissions. The code remains an experimental demonstration.
 
 ## Current Limitations
 
