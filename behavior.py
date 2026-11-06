@@ -8,9 +8,7 @@ Y="\033[93m"
 R="\033[91m"
 X="\033[0m"
 
-history_file=Path("behavior_history.json")
-
-history=json.loads(history_file.read_text()) if history_file.exists() else {}
+history=load_history()
 
 agent="ECHO-01"
 attempts=[
