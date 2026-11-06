@@ -26,6 +26,6 @@ The Phase 7 output requires an intact local key and matching `.manifest` file. D
 
 ## Audit status
 
-These changes are **submitted for independent re-evaluation**, not certified as secure. The previous 11 passing tests apply to the prior commit; rerun tests against this branch. The major unresolved design gap is the absence of an independently enforced, authenticated agent runtime and operator approval boundary.
+These changes are **submitted for independent re-evaluation**, not certified as secure. Independent review reported 28 passing tests on this branch, including targeted mutation checks. This is not a formal security certification. The major unresolved design gap is the absence of an independently enforced, authenticated agent runtime and operator approval boundary.
 
 The repository is public with all rights reserved; no open-source license is granted.
