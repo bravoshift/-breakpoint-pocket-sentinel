@@ -63,6 +63,8 @@ class RecoveryGate:
     def check(self, agent, action, path):
         if not isinstance(agent, str) or not agent or agent != agent.strip():
             return Decision("CONTAINED", "Invalid identity; no action authorized.")
+        if self.persistent and self.denials.get(agent, 0) >= LOCKOUT_THRESHOLD:
+            self.contained.add(agent)
         if agent in self.contained:
             decision = Decision("HALTED", "Agent is contained; human review required.")
         else:
