@@ -86,7 +86,7 @@ The watchdog checks locally stored evidence against locally stored SHA-256 finge
 ## Remaining Cleanup
 
 - Move authentication and anti-rollback state to an independently protected service or OS-backed store before real deployment.
-- Seven v1.3 regression tests passed on an earlier frozen baseline in an AI-assisted review (Claude, Python 3.13); this branch's new tests require a fresh run. Mutation checks confirmed that reintroducing four previously fixed bug classes causes test failures. This is not a formal third-party security audit.
+- Seven v1.3 regression tests passed on an earlier frozen baseline in an AI-assisted review (Claude, Python 3.13); 28 tests passed on this hardening branch in independent review, with mutation checks confirming that targeted regressions are detected. This is not a formal third-party security audit.
 - `gate.py` and `gate_v04.py` intentionally retain the same historical example; a later cleanup can consolidate them.
 - A v1.2 milestone commit was a marker, not a new implementation.
 
