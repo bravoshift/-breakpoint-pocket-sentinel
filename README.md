@@ -32,7 +32,7 @@ python breakpoint_v11.py
 
 On a fresh clone the controller initializes missing behavior history automatically. It writes demonstration output to `test_lab/`, `controller_log.json`, and `behavior_history.json`. Repeated runs retain violation counts; remove the generated history file to reset this local demonstration.
 
-For integrity demonstrations, run `python blackbox.py`, `python sentinel.py`, then `python watchdog.py`. The watchdog compares locally stored SHA-256 sidecars for black-box and Sentinel evidence. It also looks for a behavior-history fingerprint, but current history writers do not create one, so it reports that record as missing a fingerprint. None of these local fingerprints is an externally trusted seal.
+For integrity demonstrations, run `python blackbox.py`, `python sentinel.py`, then `python watchdog.py`. The watchdog compares locally stored SHA-256 sidecars for black-box and Sentinel evidence. It also looks for a behavior-history fingerprint, but current history writers do not create one, so it reports that record as **UNPROTECTED** rather than claiming tampering. None of these local fingerprints is an externally trusted seal.
 
 ## Verified Experiments
 
@@ -68,7 +68,7 @@ The watchdog checks locally stored evidence against locally stored SHA-256 finge
 ## Remaining Cleanup
 
 - Protect behavior history with an independent, trusted integrity mechanism and fail-closed verification before trusting counts.
-- Fresh-clone execution and regression tests are still needed after the latest fixes.
+- A fresh-clone run and evidence-tampering checks were reported successful in an external review; automated regression tests are still needed.
 - `gate.py` and `gate_v04.py` intentionally retain the same historical example; a later cleanup can consolidate them.
 - A v1.2 milestone commit was a marker, not a new implementation.
 
