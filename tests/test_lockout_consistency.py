@@ -26,5 +26,24 @@ class PersistentLockoutTests(unittest.TestCase):
                                     capture_output=True, text=True, timeout=20)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
+
+    def test_third_denial_contains_in_same_session(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            for name in ("agent_recovery.py", "history_store.py"):
+                shutil.copy2(ROOT / name, root / name)
+            code = (
+                "from history_store import LOCKOUT_THRESHOLD;"
+                "from agent_recovery import RecoveryGate;"
+                "gate=RecoveryGate(trusted_agents={'ECHO-02'},persistent=True,max_denials=5);"
+                "statuses=[gate.check('ECHO-02','WRITE','private/notes.txt').status "
+                "for _ in range(LOCKOUT_THRESHOLD)];"
+                "assert statuses==['DENIED_GUIDED','DENIED_GUIDED','CONTAINED'],statuses;"
+                "assert gate.check('ECHO-02','WRITE','workspace/ok.txt').status=='HALTED'"
+            )
+            result = subprocess.run([sys.executable, "-c", code], cwd=root,
+                                    capture_output=True, text=True, timeout=20)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
 if __name__ == "__main__":
     unittest.main()
