@@ -41,7 +41,7 @@ class RecoveryGate:
             save_history(self.denials)
 
     def _valid_path(self, action, path):
-        if action != "WRITE" or not isinstance(path, str):
+        if action not in ("READ", "WRITE") or not isinstance(path, str):
             return False, True
         parts = path.replace("\\", "/").split("/")
         hostile = (not path or path.startswith(("/", "\\")) or
@@ -79,7 +79,7 @@ class RecoveryGate:
                     self.contained.add(agent)
                     decision = Decision("CONTAINED", "Unauthorized action blocked; human review required.")
                 else:
-                    decision = Decision("DENIED_GUIDED", "Action blocked. Retry a WRITE inside workspace/ only.")
+                    decision = Decision("DENIED_GUIDED", "Action blocked. Retry inside workspace/ only.")
                 self._save()
         self.events.append({"agent": agent, "action": action, "path": str(path), "status": decision.status})
         return decision
