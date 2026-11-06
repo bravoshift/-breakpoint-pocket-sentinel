@@ -60,10 +60,8 @@ def load_history():
 
 def save_history(history):
     key = _key()
-    data = (json.dumps(history, indent=2, sort_keys=True) + "
-").encode()
-    tag = hmac.new(key, data, hashlib.sha256).hexdigest() + "
-"
+    data = (json.dumps(history, indent=2, sort_keys=True) + "\n").encode()
+    tag = hmac.new(key, data, hashlib.sha256).hexdigest() + "\n"
     for target, content in ((HISTORY, data), (TAG, tag.encode())):
         temporary = target.with_suffix(target.suffix + ".tmp")
         with open(temporary, "wb") as f:
