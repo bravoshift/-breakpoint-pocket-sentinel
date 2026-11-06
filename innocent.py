@@ -2,7 +2,8 @@ import json
 from pathlib import Path
 
 agent = "ECHO-02"
-history = json.loads(Path("behavior_history.json").read_text())
+history_file = Path("behavior_history.json")
+history = json.loads(history_file.read_text()) if history_file.exists() else {}
 violations = history.get(agent, 0)
 
 target = Path("test_lab/workspace/ECHO-02.txt")
