@@ -6,7 +6,9 @@ import os
 import secrets
 from pathlib import Path
 
-LOCKOUT_THRESHOLD = 3  # Shared persistent-history lockout threshold\n\nBASE = Path(__file__).resolve().parent
+LOCKOUT_THRESHOLD = 3  # Shared persistent-history lockout threshold
+
+BASE = Path(__file__).resolve().parent
 HISTORY = BASE / "behavior_history.json"
 TAG = BASE / "behavior_history.hmac"
 KEY = BASE / ".breakpoint_state/history.key"
@@ -58,8 +60,10 @@ def load_history():
 
 def save_history(history):
     key = _key()
-    data = (json.dumps(history, indent=2, sort_keys=True) + "\n").encode()
-    tag = hmac.new(key, data, hashlib.sha256).hexdigest() + "\n"
+    data = (json.dumps(history, indent=2, sort_keys=True) + "
+").encode()
+    tag = hmac.new(key, data, hashlib.sha256).hexdigest() + "
+"
     for target, content in ((HISTORY, data), (TAG, tag.encode())):
         temporary = target.with_suffix(target.suffix + ".tmp")
         with open(temporary, "wb") as f:
