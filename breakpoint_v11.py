@@ -6,9 +6,9 @@ ROOT = (Path.cwd() / "test_lab").resolve()
 WORK = ROOT / "workspace"
 WORK.mkdir(parents=True, exist_ok=True)
 
-history = json.loads(Path("behavior_history.json").read_text())
+history_file = Path("behavior_history.json")
+history = json.loads(history_file.read_text()) if history_file.exists() else {}
 records = []
-contained = set()
 contained = set()
 
 def check(agent, target):
@@ -25,7 +25,6 @@ def check(agent, target):
     elif not destination.is_relative_to(WORK):
         status = "DENIED"
         history[agent] = violations + 1
-        contained.add(agent)
         contained.add(agent)
     else:
         destination.parent.mkdir(parents=True, exist_ok=True)
