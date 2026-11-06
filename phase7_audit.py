@@ -25,7 +25,7 @@ def make_audit():
     previous = "0" * 64
     for agent, trusted, paths in SCENARIOS:
         for path in paths:
-            decision = gate.check(agent, "WRITE", path, trusted=trusted)
+            decision = gate.check(agent, "WRITE", path)
             entry = {
                 "sequence": len(entries) + 1,
                 "agent": agent,
